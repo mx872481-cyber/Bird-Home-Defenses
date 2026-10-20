@@ -68,6 +68,14 @@ footer{color:#dce8c6;text-align:center;font-size:11px;padding:2px}
 .progress span{display:block;height:100%;background:#6c9b50;width:0}
 @media(min-width:560px){.app{margin:16px auto;min-height:calc(100dvh - 32px);border-radius:22px}.panel{padding:18px}.doodle{height:95px}}
 @media(max-width:380px){.app{padding:8px;gap:8px}.panel{padding:10px}.actor{width:76px}.doodle{font-size:48px}.bird{font-size:55px}.prompt{font-size:18px}nav button{font-size:12px}}
+
+.doodle-svg{width:78px;height:78px;overflow:visible}
+.doodle-svg .outline{stroke:#252a23;stroke-width:4;stroke-linecap:round;stroke-linejoin:round}
+.bird-svg{animation:bob 1.8s infinite ease-in-out}
+.vocab-card{display:block;text-align:left;min-height:86px}
+.vocab-card .count{display:block;font-size:12px;font-weight:500;margin-top:5px;color:#667257}
+.file-import{background:#fffdf3;border:2px dashed #252a23;border-radius:12px;padding:12px;margin:8px 0}
+.file-import input{width:100%;margin-top:8px}
 </style>
 </head>
 <body>
@@ -89,9 +97,25 @@ footer{color:#dce8c6;text-align:center;font-size:11px;padding:2px}
 <div class="battle" id="battle">
 <div class="battle-top"><span id="wave">第 1 波 · 杜鹃来袭</span><span id="enemyHp">杜鹃 HP ♥♥♥</span></div>
 <div class="actors">
-<div class="actor"><div class="doodle bird" id="bird">🐤</div><div>我方小鸟</div><div class="small" id="eggInventory">🥚 普通蛋 × 3</div><div class="small" id="specialInventory">异色蛋 × 0</div></div>
+<div class="actor"><div class="doodle bird" id="bird" aria-label="黄色小鸟">
+<svg class="doodle-svg bird-svg" viewBox="0 0 100 100" role="img" aria-label="黄色圆形小鸟">
+<path class="outline" fill="#ffd83d" d="M19 48 C17 28 33 17 51 18 C72 18 84 34 81 54 C79 74 66 83 47 81 C27 80 17 68 19 48Z"/>
+<path class="outline" fill="#ffd83d" d="M19 48 L8 41 L9 53 L20 57Z"/><path class="outline" fill="#ffd83d" d="M80 48 L92 42 L91 54 L80 58Z"/>
+<circle cx="39" cy="41" r="3.8" fill="#252a23"/><circle cx="61" cy="41" r="3.8" fill="#252a23"/>
+<path class="outline" fill="#ffd83d" d="M45 49 L54 49 L50 55Z"/><path class="outline" fill="#ffbd35" d="M45 51 L54 51 L50 59Z"/>
+<path class="outline" fill="none" d="M39 64 L45 67 L52 66"/>
+<path class="outline" fill="none" d="M39 81 L38 91 M48 82 L48 92 M34 91 L39 91 M45 92 L51 92"/>
+</svg></div><div>我方小鸟</div><div class="small" id="eggInventory">🥚 普通蛋 × 3</div><div class="small" id="specialInventory">异色蛋 × 0</div></div>
 <div style="font-size:25px;font-weight:900" id="flight">→</div>
-<div class="actor"><div class="doodle" id="cuckoo">🐦‍⬛</div><div>嚣张杜鹃</div><div class="small" id="enemyState">正在靠近！</div></div>
+<div class="actor"><div class="doodle" id="cuckoo" aria-label="紫色杜鹃">
+<svg class="doodle-svg bird-svg" viewBox="0 0 100 100" role="img" aria-label="紫色圆形杜鹃">
+<path class="outline" fill="#b46cff" d="M19 48 C17 28 33 17 51 18 C72 18 84 34 81 54 C79 74 66 83 47 81 C27 80 17 68 19 48Z"/>
+<path class="outline" fill="#b46cff" d="M19 48 L8 41 L9 53 L20 57Z"/><path class="outline" fill="#b46cff" d="M80 48 L92 42 L91 54 L80 58Z"/>
+<circle cx="39" cy="41" r="3.8" fill="#252a23"/><circle cx="61" cy="41" r="3.8" fill="#252a23"/>
+<path class="outline" fill="#ffd83d" d="M45 49 L54 49 L50 58Z"/><path class="outline" fill="#ffd83d" d="M45 55 L54 55 L50 64Z"/>
+<path class="outline" fill="none" d="M39 68 Q49 73 58 66"/>
+<path class="outline" fill="none" d="M39 81 L38 91 M48 82 L48 92 M34 91 L39 91 M45 92 L51 92"/>
+</svg></div><div>嚣张杜鹃</div><div class="small" id="enemyState">正在靠近！</div></div>
 </div>
 <div class="word-card">
 <div class="muted">请根据中文释义拼写英文</div>
@@ -107,7 +131,7 @@ footer{color:#dce8c6;text-align:center;font-size:11px;padding:2px}
 
 <section class="panel hidden" id="page-vocab">
 <h2>📚 选择词库</h2>
-<p class="muted">内置词库当前为可运行的演示词表，后续可继续补充并核对完整度。选择后开始游戏。</p>
+<p class="muted">选择阶段词库开始游戏。目标容量是规划值；当前内置词条数会如实显示，不会把演示词表伪装成完整考试词库。</p>
 <div class="cards" id="vocabCards"></div>
 <h3>我的词库</h3>
 <div class="muted" id="customCount">尚未导入自定义词汇。</div>
@@ -137,6 +161,7 @@ footer{color:#dce8c6;text-align:center;font-size:11px;padding:2px}
 <h2>⚙️ 我的 / 导入词库</h2>
 <p class="muted">只支持粘贴纯文本，不支持文件上传。每行一个单词，也可以使用「英文 | 中文释义」格式。</p>
 <label for="importText"><strong>粘贴你的单词</strong></label>
+<div class="file-import"><strong>📄 从词书文件提取文字</strong><p class="muted">支持可复制文字的 PDF 和 Word（.docx）。上传后会尝试提取英文单词与中文释义，请检查预览再导入。扫描图片版 PDF 需要 OCR，本原型暂不支持。</p><input id="bookFile" type="file" accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"><div class="muted" id="fileStatus">文件仅在当前浏览器处理，不会上传到服务器。</div></div>
 <textarea class="field" id="importText" placeholder="apple | 苹果&#10;protect | 保护&#10;nest | 鸟巢&#10;abandon | 放弃"></textarea>
 <div class="row"><button id="previewImport">检查并预览</button><button class="secondary" id="clearText">清空文本</button></div>
 <div id="importPreview" class="toast hidden"></div>
@@ -154,7 +179,7 @@ footer{color:#dce8c6;text-align:center;font-size:11px;padding:2px}
 (() => {
 const $ = id => document.getElementById(id);
 const KEY = 'birdHomeDefense_v1';
-const lists = {
+const targetCounts = {'初中词汇':1600,'高中词汇':3500,'大学英语四级':3000,'大学英语六级':5000,'雅思词汇':600};\nconst lists = {
 '初中词汇':[
 ['apple','苹果'],['animal','动物'],['answer','回答；答案'],['beautiful','美丽的'],['because','因为'],['begin','开始'],['between','在……之间'],['birthday','生日'],['borrow','借入'],['busy','忙碌的'],['careful','小心的'],['change','改变'],['choose','选择'],['clean','清洁的'],['different','不同的'],['enough','足够的'],['family','家庭'],['friendly','友好的'],['important','重要的'],['learn','学习'],['library','图书馆'],['minute','分钟'],['protect','保护'],['question','问题'],['remember','记得'],['usually','通常']
 ],
@@ -198,12 +223,59 @@ function useSpecial(){if(!running||locked||!specialEggs.length){setFeedback('还
 function skipWord(){if(!running||locked||!current)return;failWord(true)}
 $('submit').addEventListener('click',submitAnswer);$('answer').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();submitAnswer()}});$('startBtn').addEventListener('click',startGame);$('skipBtn').addEventListener('click',skipWord);
 $('specialInventory').style.cursor='pointer';$('specialInventory').title='点击使用异色蛋';$('specialInventory').addEventListener('click',useSpecial);
-function renderVocab(){let container=$('vocabCards');container.innerHTML='';Object.keys(lists).forEach(name=>{let b=document.createElement('button');b.className='secondary';b.style.textAlign='left';b.innerHTML=`<strong>${name}</strong><br><span class="small">${lists[name].length} 个演示词条</span>`;b.addEventListener('click',()=>{data.selected=name;currentList=name;save();setPage('game');setFeedback(`已选择${name}，点击开始守家`);$('meaning').textContent='准备好了吗？';$('wordMeta').textContent='点击开始游戏';$('answer').disabled=true;$('submit').disabled=true});container.appendChild(b)});let mine=document.createElement('button');mine.className='secondary';mine.style.textAlign='left';mine.innerHTML=`<strong>我的词库</strong><br><span class="small">${data.custom.length} 个自定义词条</span>`;mine.addEventListener('click',()=>{data.selected='我的词库';currentList='我的词库';save();setPage('game');setFeedback('已选择我的词库，点击开始守家')});container.appendChild(mine);$('customCount').textContent=`我的词库：${data.custom.length} 个词条`;$('mistakePreview').innerHTML=Object.keys(data.wrong).length?Object.values(data.wrong).slice(0,5).map(w=>`<div class="word-item"><span><b>${escapeHtml(w.word)}</b> — ${escapeHtml(w.meaning)}</span><span>错 ${w.misses} 次</span></div>`).join(''):'暂无错词，继续保持！'}
+function renderVocab(){let container=$('vocabCards');container.innerHTML='';Object.keys(lists).forEach(name=>{let b=document.createElement('button');b.className='secondary vocab-card';b.style.textAlign='left';b.innerHTML=`<strong>${name}</strong><span class="count">当前 ${lists[name].length} 词 · 目标 ${targetCounts[name].toLocaleString()} 词</span>`;b.addEventListener('click',()=>{data.selected=name;currentList=name;save();setPage('game');setFeedback(`已选择${name}，点击开始守家`);$('meaning').textContent='准备好了吗？';$('wordMeta').textContent='点击开始游戏';$('answer').disabled=true;$('submit').disabled=true});container.appendChild(b)});let mine=document.createElement('button');mine.className='secondary';mine.style.textAlign='left';mine.innerHTML=`<strong>我的词库</strong><br><span class="small">${data.custom.length} 个自定义词条</span>`;mine.addEventListener('click',()=>{data.selected='我的词库';currentList='我的词库';save();setPage('game');setFeedback('已选择我的词库，点击开始守家')});container.appendChild(mine);$('customCount').textContent=`我的词库：${data.custom.length} 个词条`;$('mistakePreview').innerHTML=Object.keys(data.wrong).length?Object.values(data.wrong).slice(0,5).map(w=>`<div class="word-item"><span><b>${escapeHtml(w.word)}</b> — ${escapeHtml(w.meaning)}</span><span>错 ${w.misses} 次</span></div>`).join(''):'暂无错词，继续保持！'}
 function renderHistory(){let todayHistory=data.history.filter(h=>h.date===today());$('totalAnswered').textContent=data.answers;$('totalCorrect').textContent=data.correct;$('accuracy').textContent=(data.answers?Math.round(data.correct/data.answers*100):0)+'%';$('todayWords').textContent=new Set(todayHistory.map(h=>h.word)).size;$('mistakeCount').textContent=Object.keys(data.wrong).length;$('gamesPlayed').textContent=data.games;$('bestScore').textContent=data.bestScore;$('recentHistory').innerHTML=data.history.slice(0,10).map(h=>`<div class="word-item"><span><b>${escapeHtml(h.word)}</b> — ${escapeHtml(h.meaning)}</span><span>${h.correct?'✅':'❌'} ${h.date}</span></div>`).join('')||'<div class="muted">还没有学习记录，去玩一局吧！</div>';$('mistakeList').innerHTML=Object.values(data.wrong).slice(0,30).map(w=>`<div class="word-item"><span><b>${escapeHtml(w.word)}</b> — ${escapeHtml(w.meaning)}</span><span>错 ${w.misses} 次</span></div>`).join('')||'<div class="muted">目前没有需要复习的错词。</div>'}
 function escapeHtml(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 $('goImport').addEventListener('click',()=>setPage('settings'));$('clearText').addEventListener('click',()=>{$('importText').value='';pendingImport=[];$('importPreview').classList.add('hidden');$('saveImport').disabled=true});
 $('previewImport').addEventListener('click',()=>{let lines=$('importText').value.split(/\r?\n/).map(s=>s.trim()).filter(Boolean),seen=new Set(),bad=0;pendingImport=[];for(let line of lines){let parts=line.split(/\s*[|,\t]\s*/);let word=(parts[0]||'').trim().toLowerCase(),meaning=(parts[1]||'').trim();if(!/^[a-z][a-z'-]*$/i.test(word)||seen.has(word)){bad++;continue}seen.add(word);pendingImport.push([word,meaning||'待补充释义'])}let box=$('importPreview');box.classList.remove('hidden');box.textContent=`识别到 ${pendingImport.length} 个单词，跳过 ${bad} 行（格式错误或重复）。预览：${pendingImport.slice(0,8).map(x=>x[0]+' — '+x[1]).join('；')}${pendingImport.length>8?'……':''}`;$('saveImport').disabled=!pendingImport.length});
 $('saveImport').addEventListener('click',()=>{let map=new Map(data.custom.map(x=>[x[0],x]));pendingImport.forEach(x=>map.set(x[0],x));data.custom=[...map.values()];data.selected='我的词库';currentList='我的词库';save();$('importPreview').textContent=`导入完成！我的词库现在有 ${data.custom.length} 个词条。`;renderVocab()});
+
+function normalizeExtractedText(raw){
+  const lines=raw.replace(/\r/g,'\n').replace(/[ \t]+/g,' ').split('\n').map(x=>x.trim()).filter(Boolean);
+  const out=[], seen=new Set();
+  for(const line of lines){
+    let m=line.match(/^([A-Za-z][A-Za-z'-]{0,39})\s*(?:[|｜\t:：,，;；]\s*|\s{2,})([\u4e00-\u9fff].*)$/);
+    if(!m){
+      m=line.match(/^([A-Za-z][A-Za-z'-]{0,39})\s+([\u4e00-\u9fff].*)$/);
+    }
+    if(m){
+      const word=m[1].toLowerCase(), meaning=m[2].trim();
+      if(!seen.has(word)){out.push(`${word} | ${meaning}`);seen.add(word)}
+    }
+  }
+  return out;
+}
+$('bookFile').addEventListener('change', async e=>{
+  const file=e.target.files && e.target.files[0]; if(!file)return;
+  $('fileStatus').textContent='正在本地读取文件，请稍候…';
+  try{
+    let raw='';
+    const lower=file.name.toLowerCase();
+    if(lower.endsWith('.pdf')){
+      if(!window.pdfjsLib)throw new Error('PDF 解析库加载失败，请检查网络后刷新页面。');
+      pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+      const pdf=await pdfjsLib.getDocument({data:await file.arrayBuffer()}).promise;
+      for(let n=1;n<=pdf.numPages;n++){
+        const page=await pdf.getPage(n), content=await page.getTextContent();
+        raw+=content.items.map(it=>it.str).join(' ')+'\n';
+      }
+    }else if(lower.endsWith('.docx')){
+      if(!window.mammoth)throw new Error('Word 解析库加载失败，请检查网络后刷新页面。');
+      const result=await mammoth.extractRawText({arrayBuffer:await file.arrayBuffer()});raw=result.value;
+    }else{
+      throw new Error('目前支持 PDF 和 .docx 文件；旧版 .doc 请另存为 .docx 后导入。');
+    }
+    const pairs=normalizeExtractedText(raw);
+    if(!pairs.length){
+      $('fileStatus').textContent='未自动识别出“英文单词 + 中文释义”格式。可以复制词书文字，粘贴到下方文本框手动整理。';
+      $('importText').value=raw.slice(0,50000);
+    }else{
+      $('importText').value=pairs.join('\n');
+      $('fileStatus').textContent=`提取完成：识别到 ${pairs.length} 条候选词条。请检查下方预览并确认，排版复杂的词书可能需要手动校对。`;
+    }
+    $('previewImport').click();
+  }catch(err){$('fileStatus').textContent='读取失败：'+err.message}
+});
 $('timeoutSelect').addEventListener('change',()=>{data.settings.timeout=Number($('timeoutSelect').value);save()});
 $('practiceMistakes').addEventListener('click',()=>{if(!Object.keys(data.wrong).length){alert('还没有错词哦！');return}data.selected='错词复习';currentList='错词复习';setPage('game');startGame()});
 $('exportData').addEventListener('click',()=>{let blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});let a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='bird-home-defense-backup.json';a.click();URL.revokeObjectURL(a.href)});
