@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#222820">
+<title>守卫小鸟的家园</title>
+<style>
+:root{--ink:#252a23;--green:#c9ddaa;--green2:#dce8c6;--cream:#f8f3df;--yellow:#ffd83d;--muted:#667257;--red:#d95845}
+*{box-sizing:border-box}
+body{margin:0;background:#f4f3ed;color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer;border:2px solid var(--ink);border-radius:12px;padding:11px 13px;background:var(--yellow);color:var(--ink);font-weight:750;box-shadow:0 3px 0 var(--ink)}
+button:active{transform:translateY(2px);box-shadow:0 1px 0 var(--ink)}
+button.secondary{background:#fffdf3}
+button.danger{background:#ffd6ce}
+button:disabled{opacity:.45;cursor:not-allowed}
+.app{max-width:680px;min-height:100dvh;margin:auto;background:var(--ink);padding:12px;display:flex;flex-direction:column;gap:10px}
+header{color:#fffdf3;display:flex;justify-content:space-between;align-items:center;gap:8px;padding:4px 2px}
+.brand{font-size:clamp(18px,4vw,23px);font-weight:850;letter-spacing:.03em}
+.pill{font-size:12px;background:#3a4235;color:#ffe082;border-radius:999px;padding:7px 10px;white-space:nowrap}
+nav{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+nav button{font-size:13px;padding:10px 3px;background:#3b4336;color:#fffdf3;border-color:#5c6752;box-shadow:none}
+nav button.active{background:var(--yellow);color:var(--ink);border-color:var(--yellow)}
+main{flex:1;min-height:0}
+.panel{background:var(--green);border-radius:18px;padding:13px;min-height:300px}
+.hidden{display:none!important}
+h1,h2,h3,p{margin-top:0}
+h2{font-size:20px;margin-bottom:8px}
+h3{font-size:16px;margin:14px 0 7px}
+.muted{color:var(--muted);font-size:13px;line-height:1.45}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:10px}
+.stat{background:var(--cream);border-radius:12px;padding:9px;text-align:center}
+.stat strong{display:block;font-size:20px}
+.battle{background:#b6ce96;border-radius:14px;padding:12px;margin-bottom:10px;min-height:180px}
+.battle-top{display:flex;justify-content:space-between;font-size:13px;font-weight:700}
+.actors{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0}
+.actor{width:92px;text-align:center;font-size:12px;font-weight:700}
+.doodle{height:78px;display:grid;place-items:center;font-size:56px;filter:drop-shadow(2px 2px 0 #252a23);animation:bob 1.8s infinite ease-in-out}
+.bird{font-size:64px;position:relative}
+.bird::after{content:"";position:absolute;right:-8px;bottom:4px;width:24px;height:30px;border-radius:50%;background:#b46cff;border:3px solid var(--ink);transform:rotate(20deg);opacity:0;z-index:-1}
+.bird.has-egg::after{opacity:1;animation:pop .35s ease-out}
+.projectile{font-size:25px;animation:shoot .55s ease-in forwards}
+@keyframes bob{50%{transform:translateY(-4px) rotate(2deg)}}
+@keyframes shoot{0%{transform:translateX(-20px) rotate(0)}100%{transform:translateX(55px) rotate(450deg)}}
+@keyframes pop{0%{transform:scale(.1) rotate(0)}80%{transform:scale(1.3) rotate(30deg)}100%{transform:scale(1) rotate(20deg)}}
+@keyframes shake{25%{transform:translateX(-5px) rotate(-4deg)}75%{transform:translateX(5px) rotate(4deg)}}
+.shake{animation:shake .3s}
+.word-card{background:var(--cream);border-radius:13px;padding:12px;text-align:center}
+.prompt{font-size:20px;font-weight:800;margin:4px 0 8px}
+.answer-row{display:flex;gap:7px;margin-top:8px}
+.answer-row input{min-width:0;flex:1;border:2px solid var(--ink);border-radius:11px;padding:12px;background:white;outline-offset:2px}
+.answer-row button{padding-inline:15px}
+.feedback{min-height:23px;text-align:center;font-size:13px;font-weight:700;padding-top:7px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.row>*{flex:1}
+.field{width:100%;border:2px solid var(--ink);border-radius:10px;background:#fffdf6;padding:10px;margin:5px 0 9px}
+textarea.field{min-height:140px;resize:vertical}
+.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.card{background:var(--cream);border-radius:12px;padding:12px}
+.card strong{font-size:20px}
+.word-list{display:grid;gap:6px}
+.word-item{display:flex;justify-content:space-between;gap:8px;background:var(--cream);padding:9px;border-radius:9px;font-size:14px}
+.small{font-size:12px}
+footer{color:#dce8c6;text-align:center;font-size:11px;padding:2px}
+.toast{background:#fff1ba;border:2px solid var(--ink);border-radius:10px;padding:9px;margin:8px 0;font-size:13px}
+.progress{height:8px;background:#edf0e5;border-radius:20px;overflow:hidden;margin:8px 0}
+.progress span{display:block;height:100%;background:#6c9b50;width:0}
+@media(min-width:560px){.app{margin:16px auto;min-height:calc(100dvh - 32px);border-radius:22px}.panel{padding:18px}.doodle{height:95px}}
+@media(max-width:380px){.app{padding:8px;gap:8px}.panel{padding:10px}.actor{width:76px}.doodle{font-size:48px}.bird{font-size:55px}.prompt{font-size:18px}nav button{font-size:12px}}
+</style>
+</head>
+<body>
+<div class="app">
+<header><div><div class="brand">🐣 守卫小鸟的家园</div><div class="muted" style="color:#cbd7bd">拼对单词，发射鸟蛋！</div></div><div class="pill" id="headerStatus">今日已学 0 词</div></header>
+<nav>
+<button class="active" data-page="game">🎮 开始游戏</button>
+<button data-page="vocab">📚 词库</button>
+<button data-page="history">📈 学习记录</button>
+<button data-page="settings">⚙️ 我的</button>
+</nav>
+<main>
+<section class="panel" id="page-game">
+<div class="stats">
+<div class="stat"><span class="muted">鸟巢生命</span><strong id="hp">♥♥♥</strong></div>
+<div class="stat"><span class="muted">本局得分</span><strong id="score">0</strong></div>
+<div class="stat"><span class="muted">连击</span><strong id="streak">0</strong></div>
+</div>
+<div class="battle" id="battle">
+<div class="battle-top"><span id="wave">第 1 波 · 杜鹃来袭</span><span id="enemyHp">杜鹃 HP ♥♥♥</span></div>
+<div class="actors">
+<div class="actor"><div class="doodle bird" id="bird">🐤</div><div>我方小鸟</div><div class="small" id="eggInventory">🥚 普通蛋 × 3</div><div class="small" id="specialInventory">异色蛋 × 0</div></div>
+<div style="font-size:25px;font-weight:900" id="flight">→</div>
+<div class="actor"><div class="doodle" id="cuckoo">🐦‍⬛</div><div>嚣张杜鹃</div><div class="small" id="enemyState">正在靠近！</div></div>
+</div>
+<div class="word-card">
+<div class="muted">请根据中文释义拼写英文</div>
+<div class="prompt" id="meaning">点击开始游戏</div>
+<div class="muted" id="wordMeta">选择词库后开始挑战</div>
+<div class="answer-row"><input id="answer" type="text" autocomplete="off" autocapitalize="none" spellcheck="false" enterkeyhint="go" placeholder="输入英文单词…" disabled><button id="submit" disabled>发射！</button></div>
+<div class="feedback" id="feedback" aria-live="polite">准备好守护家园了吗？</div>
+</div>
+</div>
+<div class="row"><button id="startBtn">开始守家</button><button class="secondary" id="skipBtn">跳过此词</button></div>
+<p class="muted" style="margin:10px 0 0">拼对：鸟蛋弹回。拼错或超时：蛋清蛋黄飞溅。失败时有机会获得异色蛋！</p>
+</section>
+
+<section class="panel hidden" id="page-vocab">
+<h2>📚 选择词库</h2>
+<p class="muted">内置词库当前为可运行的演示词表，后续可继续补充并核对完整度。选择后开始游戏。</p>
+<div class="cards" id="vocabCards"></div>
+<h3>我的词库</h3>
+<div class="muted" id="customCount">尚未导入自定义词汇。</div>
+<button class="secondary" style="width:100%;margin-top:8px" id="goImport">＋ 导入文本单词</button>
+<h3>错词速练</h3><div id="mistakePreview" class="word-list"></div>
+</section>
+
+<section class="panel hidden" id="page-history">
+<h2>📈 学习记录</h2>
+<div class="stats">
+<div class="stat"><span class="muted">累计答题</span><strong id="totalAnswered">0</strong></div>
+<div class="stat"><span class="muted">累计正确</span><strong id="totalCorrect">0</strong></div>
+<div class="stat"><span class="muted">总体正确率</span><strong id="accuracy">0%</strong></div>
+</div>
+<div class="cards">
+<div class="card"><span class="muted">今日已学</span><br><strong id="todayWords">0</strong><span class="small"> 词</span></div>
+<div class="card"><span class="muted">错词数量</span><br><strong id="mistakeCount">0</strong><span class="small"> 个</span></div>
+<div class="card"><span class="muted">累计游戏局数</span><br><strong id="gamesPlayed">0</strong></div>
+<div class="card"><span class="muted">最高分</span><br><strong id="bestScore">0</strong></div>
+</div>
+<h3>最近学习</h3><div id="recentHistory" class="word-list"></div>
+<h3>需要复习的单词</h3><div id="mistakeList" class="word-list"></div>
+<button class="secondary" style="width:100%;margin-top:10px" id="practiceMistakes">练习错词</button>
+</section>
+
+<section class="panel hidden" id="page-settings">
+<h2>⚙️ 我的 / 导入词库</h2>
+<p class="muted">只支持粘贴纯文本，不支持文件上传。每行一个单词，也可以使用「英文 | 中文释义」格式。</p>
+<label for="importText"><strong>粘贴你的单词</strong></label>
+<textarea class="field" id="importText" placeholder="apple | 苹果&#10;protect | 保护&#10;nest | 鸟巢&#10;abandon | 放弃"></textarea>
+<div class="row"><button id="previewImport">检查并预览</button><button class="secondary" id="clearText">清空文本</button></div>
+<div id="importPreview" class="toast hidden"></div>
+<button id="saveImport" style="width:100%;margin-top:8px" disabled>确认导入我的词库</button>
+<h3>游戏设置</h3>
+<label class="muted" for="timeoutSelect">每个单词的作答时间</label>
+<select class="field" id="timeoutSelect"><option value="0">不限时（适合学习）</option><option value="15">15 秒</option><option value="10">10 秒</option><option value="7">7 秒</option></select>
+<div class="row"><button class="secondary" id="exportData">导出学习记录备份</button><button class="danger" id="resetData">清除本机全部记录</button></div>
+<p class="muted">数据保存在当前浏览器的本地存储中。更换设备或清理浏览器数据后不会自动同步，请定期导出备份。</p>
+</section>
+</main>
+<footer>纯前端网页 · 无需注册 · 学习记录保存在本机浏览器</footer>
+</div>
+<script>
+(() => {
+const $ = id => document.getElementById(id);
+const KEY = 'birdHomeDefense_v1';
+const lists = {
+'初中词汇':[
+['apple','苹果'],['animal','动物'],['answer','回答；答案'],['beautiful','美丽的'],['because','因为'],['begin','开始'],['between','在……之间'],['birthday','生日'],['borrow','借入'],['busy','忙碌的'],['careful','小心的'],['change','改变'],['choose','选择'],['clean','清洁的'],['different','不同的'],['enough','足够的'],['family','家庭'],['friendly','友好的'],['important','重要的'],['learn','学习'],['library','图书馆'],['minute','分钟'],['protect','保护'],['question','问题'],['remember','记得'],['usually','通常']
+],
+'高中词汇':[
+['ability','能力'],['achieve','实现；达到'],['advantage','优势'],['although','尽管'],['attention','注意'],['behavior','行为'],['challenge','挑战'],['compare','比较'],['consider','考虑'],['create','创造'],['decision','决定'],['develop','发展'],['environment','环境'],['experience','经验；经历'],['improve','改善；提高'],['knowledge','知识'],['method','方法'],['opportunity','机会'],['possible','可能的'],['relationship','关系'],['responsible','负责的'],['similar','相似的'],['support','支持'],['valuable','有价值的'],['wonder','想知道']
+],
+'大学英语四级':[
+['abandon','放弃'],['academic','学术的'],['access','进入；使用权'],['adapt','适应'],['approach','方法；接近'],['available','可获得的'],['benefit','益处'],['complex','复杂的'],['concentrate','集中注意力'],['contribute','贡献'],['efficient','高效的'],['evidence','证据'],['factor','因素'],['feature','特征'],['focus','关注；焦点'],['function','功能'],['individual','个人；个体的'],['maintain','维持'],['occur','发生'],['potential','潜力；潜在的'],['process','过程；处理'],['require','需要；要求'],['significant','重要的；显著的'],['specific','具体的'],['traditional','传统的']
+],
+'大学英语六级':[
+['abstract','抽象的'],['accommodate','容纳；适应'],['ambiguous','模棱两可的'],['bias','偏见'],['coherent','连贯的'],['compensate','补偿'],['consecutive','连续的'],['controversy','争议'],['criteria','标准'],['deduce','推断'],['diminish','减少'],['elaborate','详细阐述的'],['empirical','经验主义的；实证的'],['explicit','明确的'],['fundamental','根本的'],['inherent','固有的'],['integrity','正直；完整性'],['intervene','干预'],['justify','证明……合理'],['legitimate','合法的；正当的'],['nevertheless','然而'],['profound','深刻的'],['reinforce','加强'],['subsequent','随后的'],['undergo','经历；经受']
+],
+'雅思词汇':[
+['acquire','获得'],['allocate','分配'],['assess','评估'],['capacity','能力；容量'],['consequence','结果；后果'],['consume','消耗；消费'],['decline','下降；拒绝'],['demonstrate','证明；展示'],['diverse','多样的'],['emerge','出现'],['establish','建立'],['estimate','估计'],['exposure','接触；暴露'],['impact','影响'],['implement','实施'],['indicate','表明'],['interpret','解释；诠释'],['investment','投资'],['perceive','感知；认为'],['policy','政策'],['principle','原则'],['range','范围'],['relevant','相关的'],['sustainable','可持续的'],['valid','有效的']
+]};
+let data = load();
+let currentList = '初中词汇', queue = [], current = null, hp = 3, score = 0, streak = 0, wave = 1, ordinaryEggs = 3, specialEggs = [], enemyHp = 3, running = false, locked = false, timer = null, secondsLeft = 0, pendingImport = [];
+function fresh(){return {history:[],answers:0,correct:0,wrong:{},wordStats:{},games:0,bestScore:0,custom:[],selected:'初中词汇',settings:{timeout:0}}}
+function load(){try{return {...fresh(),...JSON.parse(localStorage.getItem(KEY)||'{}')}}catch(e){return fresh()}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(data))}catch(e){console.warn('本机存储失败',e)}}
+function today(){return new Date().toISOString().slice(0,10)}
+function allWords(){return currentList==='我的词库'?data.custom:currentList==='错词复习'?Object.keys(data.wrong).map(w=>[w,data.wrong[w].meaning||'待复习']):lists[currentList]||lists['初中词汇']}
+function shuffle(a){return [...a].sort(()=>Math.random()-.5)}
+function setPage(page){document.querySelectorAll('main section').forEach(s=>s.classList.toggle('hidden',s.id!=='page-'+page));document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===page));if(page==='history')renderHistory();if(page==='vocab')renderVocab();if(page==='settings'){$('timeoutSelect').value=String(data.settings.timeout||0)}}
+document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()=>setPage(b.dataset.page)));
+function updateStatus(){$('headerStatus').textContent=`今日已学 ${new Set(data.history.filter(h=>h.date===today()).map(h=>h.word)).size} 词`;$('hp').textContent='♥'.repeat(Math.max(0,hp))+'♡'.repeat(Math.max(0,3-hp));$('score').textContent=score;$('streak').textContent=streak;$('eggInventory').textContent=`🥚 普通蛋 × ${ordinaryEggs}`;$('specialInventory').textContent=`🌈 异色蛋 × ${specialEggs.length}`;$('enemyHp').textContent='杜鹃 HP '+'♥'.repeat(Math.max(0,enemyHp))+'♡'.repeat(Math.max(0,3-enemyHp));$('wave').textContent=`第 ${wave} 波 · 杜鹃来袭`}
+function setFeedback(msg){$('feedback').textContent=msg}
+function chooseWord(){let words=allWords();if(!words.length){current=null;$('meaning').textContent='词库为空';$('wordMeta').textContent='请先导入单词';$('answer').disabled=true;$('submit').disabled=true;return}
+let candidates=queue.length?queue:shuffle(words);if(!queue.length)queue=candidates.slice();let next=queue.shift();if(!next)next=words[Math.floor(Math.random()*words.length)];current=Array.isArray(next)?{word:next[0],meaning:next[1]||'待补充释义'}:next;
+$('meaning').textContent=current.meaning||'待补充释义';$('wordMeta').textContent=`词库：${currentList} · 输入完整拼写`;$('answer').value='';$('answer').disabled=!running;$('submit').disabled=!running;updateStatus();if(running){$('answer').focus({preventScroll:true});startTimer()}}
+function startTimer(){clearInterval(timer);let limit=Number(data.settings.timeout)||0;if(!limit){$('wordMeta').textContent=`词库：${currentList} · 不限时`;return}secondsLeft=limit;$('wordMeta').textContent=`词库：${currentList} · 剩余 ${secondsLeft} 秒`;timer=setInterval(()=>{secondsLeft--;$('wordMeta').textContent=`词库：${currentList} · 剩余 ${secondsLeft} 秒`;if(secondsLeft<=0){clearInterval(timer);failWord(true)}},1000)}
+function startGame(){clearInterval(timer);currentList=data.selected||currentList;hp=3;score=0;streak=0;wave=1;ordinaryEggs=3;specialEggs=[];enemyHp=3;running=true;locked=false;queue=shuffle(allWords());data.games++;save();$('bird').classList.remove('has-egg');$('cuckoo').textContent='🐦‍⬛';$('enemyState').textContent='正在靠近！';chooseWord();setFeedback('开战！快拼单词！');updateStatus();$('answer').focus({preventScroll:true})}
+function record(word,meaning,correct){data.answers++;if(correct)data.correct++;let stat=data.wordStats[word]||{seen:0,correct:0,last:''};stat.seen++;if(correct)stat.correct++;stat.last=new Date().toISOString();data.wordStats[word]=stat;
+data.history.unshift({word,meaning,correct,date:today(),time:Date.now(),list:currentList});data.history=data.history.slice(0,1000);
+if(!correct){data.wrong[word]={word,meaning,misses:(data.wrong[word]?.misses||0)+1,last:Date.now()}}else if(data.wrong[word]&&stat.correct>=2)delete data.wrong[word];save()}
+function animateShoot(){ $('flight').textContent='🥚';$('flight').classList.remove('projectile');void $('flight').offsetWidth;$('flight').classList.add('projectile');setTimeout(()=>{$('flight').textContent='↩️';$('flight').classList.remove('projectile')},550)}
+function submitAnswer(){if(!running||locked||!current)return;let val=$('answer').value.trim().toLowerCase();if(!val){setFeedback('先输入一个单词呀！');return}if(val===current.word.toLowerCase()){locked=true;clearInterval(timer);record(current.word,current.meaning,true);score+=10+Math.min(streak,10);streak++;enemyHp--;animateShoot();$('bird').classList.add('has-egg');setFeedback('命中！鸟蛋弹回来了！ +分');$('cuckoo').classList.add('shake');setTimeout(()=>$('cuckoo').classList.remove('shake'),350);if(enemyHp<=0){wave++;enemyHp=3;setTimeout(()=>setFeedback('杜鹃暂时撤退！进入第 '+wave+' 波！'),450)}ordinaryEggs=Math.min(3,ordinaryEggs+1);data.bestScore=Math.max(data.bestScore,score);save();updateStatus();setTimeout(()=>{locked=false;if(running)chooseWord()},750)}else{failWord(false)}}
+function failWord(timeout){if(!running||locked||!current)return;locked=true;clearInterval(timer);record(current.word,current.meaning,false);streak=0;ordinaryEggs=Math.max(0,ordinaryEggs-1);$('bird').classList.remove('has-egg');$('flight').textContent='💥';$('battle').classList.add('shake');setTimeout(()=>$('battle').classList.remove('shake'),350);let msg=timeout?'超时！':'拼错啦！';if(Math.random()<.3){let color=['🟣','🟢','🟠'][Math.floor(Math.random()*3)];specialEggs.push({color,effect:color==='🟣'?'冻结杜鹃':color==='🟢'?'三连射':'蛋黄冲击波'});$('bird').classList.add('has-egg');msg+=' 屁股后面冒出异色蛋 '+color+'！'}setFeedback(`${msg} 正确拼写：${current.word}`);$('enemyState').textContent='杜鹃趁机靠近！';hp--;updateStatus();save();if(hp<=0||ordinaryEggs<=0){endGame()}else setTimeout(()=>{locked=false;if(running)chooseWord()},1450)}
+function endGame(){running=false;locked=true;clearInterval(timer);$('answer').disabled=true;$('submit').disabled=true;data.bestScore=Math.max(data.bestScore,score);save();setFeedback(`家园暂时失守！本局 ${score} 分。点击“开始守家”再战！`);renderHistory()}
+function useSpecial(){if(!running||locked||!specialEggs.length){setFeedback('还没有异色蛋，拼错后有机会获得！');return}let egg=specialEggs.shift();if(egg.color==='🟣'){enemyHp=Math.max(0,enemyHp-1);$('enemyState').textContent='杜鹃被冻结！'}else if(egg.color==='🟢'){score+=15;enemyHp=Math.max(0,enemyHp-2);$('enemyState').textContent='三连射！'}else{score+=20;enemyHp=0;$('enemyState').textContent='蛋黄冲击波！'}if(enemyHp<=0){wave++;enemyHp=3}setFeedback(`${egg.color} ${egg.effect}发动！`);updateStatus();save()}
+function skipWord(){if(!running||locked||!current)return;failWord(true)}
+$('submit').addEventListener('click',submitAnswer);$('answer').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();submitAnswer()}});$('startBtn').addEventListener('click',startGame);$('skipBtn').addEventListener('click',skipWord);
+$('specialInventory').style.cursor='pointer';$('specialInventory').title='点击使用异色蛋';$('specialInventory').addEventListener('click',useSpecial);
+function renderVocab(){let container=$('vocabCards');container.innerHTML='';Object.keys(lists).forEach(name=>{let b=document.createElement('button');b.className='secondary';b.style.textAlign='left';b.innerHTML=`<strong>${name}</strong><br><span class="small">${lists[name].length} 个演示词条</span>`;b.addEventListener('click',()=>{data.selected=name;currentList=name;save();setPage('game');setFeedback(`已选择${name}，点击开始守家`);$('meaning').textContent='准备好了吗？';$('wordMeta').textContent='点击开始游戏';$('answer').disabled=true;$('submit').disabled=true});container.appendChild(b)});let mine=document.createElement('button');mine.className='secondary';mine.style.textAlign='left';mine.innerHTML=`<strong>我的词库</strong><br><span class="small">${data.custom.length} 个自定义词条</span>`;mine.addEventListener('click',()=>{data.selected='我的词库';currentList='我的词库';save();setPage('game');setFeedback('已选择我的词库，点击开始守家')});container.appendChild(mine);$('customCount').textContent=`我的词库：${data.custom.length} 个词条`;$('mistakePreview').innerHTML=Object.keys(data.wrong).length?Object.values(data.wrong).slice(0,5).map(w=>`<div class="word-item"><span><b>${escapeHtml(w.word)}</b> — ${escapeHtml(w.meaning)}</span><span>错 ${w.misses} 次</span></div>`).join(''):'暂无错词，继续保持！'}
+function renderHistory(){let todayHistory=data.history.filter(h=>h.date===today());$('totalAnswered').textContent=data.answers;$('totalCorrect').textContent=data.correct;$('accuracy').textContent=(data.answers?Math.round(data.correct/data.answers*100):0)+'%';$('todayWords').textContent=new Set(todayHistory.map(h=>h.word)).size;$('mistakeCount').textContent=Object.keys(data.wrong).length;$('gamesPlayed').textContent=data.games;$('bestScore').textContent=data.bestScore;$('recentHistory').innerHTML=data.history.slice(0,10).map(h=>`<div class="word-item"><span><b>${escapeHtml(h.word)}</b> — ${escapeHtml(h.meaning)}</span><span>${h.correct?'✅':'❌'} ${h.date}</span></div>`).join('')||'<div class="muted">还没有学习记录，去玩一局吧！</div>';$('mistakeList').innerHTML=Object.values(data.wrong).slice(0,30).map(w=>`<div class="word-item"><span><b>${escapeHtml(w.word)}</b> — ${escapeHtml(w.meaning)}</span><span>错 ${w.misses} 次</span></div>`).join('')||'<div class="muted">目前没有需要复习的错词。</div>'}
+function escapeHtml(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+$('goImport').addEventListener('click',()=>setPage('settings'));$('clearText').addEventListener('click',()=>{$('importText').value='';pendingImport=[];$('importPreview').classList.add('hidden');$('saveImport').disabled=true});
+$('previewImport').addEventListener('click',()=>{let lines=$('importText').value.split(/\r?\n/).map(s=>s.trim()).filter(Boolean),seen=new Set(),bad=0;pendingImport=[];for(let line of lines){let parts=line.split(/\s*[|,\t]\s*/);let word=(parts[0]||'').trim().toLowerCase(),meaning=(parts[1]||'').trim();if(!/^[a-z][a-z'-]*$/i.test(word)||seen.has(word)){bad++;continue}seen.add(word);pendingImport.push([word,meaning||'待补充释义'])}let box=$('importPreview');box.classList.remove('hidden');box.textContent=`识别到 ${pendingImport.length} 个单词，跳过 ${bad} 行（格式错误或重复）。预览：${pendingImport.slice(0,8).map(x=>x[0]+' — '+x[1]).join('；')}${pendingImport.length>8?'……':''}`;$('saveImport').disabled=!pendingImport.length});
+$('saveImport').addEventListener('click',()=>{let map=new Map(data.custom.map(x=>[x[0],x]));pendingImport.forEach(x=>map.set(x[0],x));data.custom=[...map.values()];data.selected='我的词库';currentList='我的词库';save();$('importPreview').textContent=`导入完成！我的词库现在有 ${data.custom.length} 个词条。`;renderVocab()});
+$('timeoutSelect').addEventListener('change',()=>{data.settings.timeout=Number($('timeoutSelect').value);save()});
+$('practiceMistakes').addEventListener('click',()=>{if(!Object.keys(data.wrong).length){alert('还没有错词哦！');return}data.selected='错词复习';currentList='错词复习';setPage('game');startGame()});
+$('exportData').addEventListener('click',()=>{let blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});let a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='bird-home-defense-backup.json';a.click();URL.revokeObjectURL(a.href)});
+$('resetData').addEventListener('click',()=>{if(confirm('确定清除当前浏览器保存的全部学习记录、错词和自定义词库吗？此操作不可撤销。')){localStorage.removeItem(KEY);data=fresh();save();renderHistory();renderVocab();setFeedback('本机记录已清除。');updateStatus()}});
+function init(){data.selected=data.selected||'初中词汇';currentList=data.selected;renderVocab();renderHistory();updateStatus();$('meaning').textContent='点击“开始守家”';$('wordMeta').textContent=`当前词库：${currentList}`;$('answer').disabled=true;$('submit').disabled=true}
+init();
+})();
+</script>
+</body>
+</html>
