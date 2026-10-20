@@ -77,6 +77,8 @@ footer{color:#dce8c6;text-align:center;font-size:11px;padding:2px}
 .file-import{background:#fffdf3;border:2px dashed #252a23;border-radius:12px;padding:12px;margin:8px 0}
 .file-import input{width:100%;margin-top:8px}
 </style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.8.0/mammoth.browser.min.js"></script>
 </head>
 <body>
 <div class="app">
@@ -179,7 +181,8 @@ footer{color:#dce8c6;text-align:center;font-size:11px;padding:2px}
 (() => {
 const $ = id => document.getElementById(id);
 const KEY = 'birdHomeDefense_v1';
-const targetCounts = {'初中词汇':1600,'高中词汇':3500,'大学英语四级':3000,'大学英语六级':5000,'雅思词汇':600};\nconst lists = {
+const targetCounts = {'初中词汇':1600,'高中词汇':3500,'大学英语四级':3000,'大学英语六级':5000,'雅思词汇':600};
+const lists = {
 '初中词汇':[
 ['apple','苹果'],['animal','动物'],['answer','回答；答案'],['beautiful','美丽的'],['because','因为'],['begin','开始'],['between','在……之间'],['birthday','生日'],['borrow','借入'],['busy','忙碌的'],['careful','小心的'],['change','改变'],['choose','选择'],['clean','清洁的'],['different','不同的'],['enough','足够的'],['family','家庭'],['friendly','友好的'],['important','重要的'],['learn','学习'],['library','图书馆'],['minute','分钟'],['protect','保护'],['question','问题'],['remember','记得'],['usually','通常']
 ],
